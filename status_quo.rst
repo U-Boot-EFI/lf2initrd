@@ -50,7 +50,7 @@ overwritten.
 EFI_LOAD_FILE2_PROTOCOL
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-The EFI stub looks for a handle with the device path
+Since Linux 5.7 the EFI stub looks for a handle with the device path
 
 ::
 
