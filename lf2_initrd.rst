@@ -29,14 +29,27 @@ but those are either limiting or architecture specific.
       initrd
     * Architecture specific
     * Kernel version specific
+    * initrd is loaded ahead of time
 
+Architecture independent proposal
+---------------------------------
+The proposed solution combines EFI_LOAD_OPTION and EFI_LOAD_FILE2_PROTOCOL.
 
+Since Linux 5.7 the EFI stub looks for a handle with the device path
 
-Proposal
---------
-Use Device Path Nodes within the EFI_LOAD_OPTION.
+::
 
-The EFI spec § 3.1.3 Load Options specifies FilePathList[].
+    /VenMedia(5568e427-68fc-4f3d-ac74-ca555231cc68)
+
+If the protocol is installed, the kernel will make a request with size=0 and an
+end node as the device path.  The exact behavior of EFI_LOAD_FILE2_PROTOCOL is
+described in § 13.2 Load File 2 Protocol.
+Since the initrd filepath is not provided by the kernel (which can't know what
+initrd he wishes to load),  it's the firmware's responsibility to provide the
+appropriate file,  similar to GRUB.
+
+The EFI_LOAD_OPTION descriptor of Boot#### parameters can provide that path.
+The EFI spec § 3.1.3 Load Options specifies for it's FilePathList[].
 
 *A packed array of UEFI device paths. The first element of the array is a
 device path that describes the device and location of the Image for this load
@@ -49,6 +62,10 @@ have to be copied to an aligned natural boundary before it is used.*
 
 Since the FilePathList[1-N] is OS specific we can define a range of N were the
 user can add his initrd(s) path(s) when defining the Boot#### options.
-It's then the bootloader's job to search the device path.  If a file is present,
-the bootloader can install the necessary protocol.  The kernel efi-stub will
-use that and load the appropriate initrd.
+
+The EFI Bootloader must scan the device paths.  If a file is present,
+the bootloader may install the necessary protocol.  
+
+Once the he kernel efi-stub discovers the protocol and tries to load an initrd,
+the EFI firmware must locate the file(s) via the device paths in the
+EFI_LOAD_OPTION and copy the buffer into the kernel provided memory.
