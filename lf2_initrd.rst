@@ -63,9 +63,13 @@ have to be copied to an aligned natural boundary before it is used.*
 Since the FilePathList[1-N] is OS specific we can define a range of N were the
 user can add his initrd(s) path(s) when defining the Boot#### options.
 
-The EFI Bootloader must scan the device paths.  If a file is present,
-the bootloader may install the necessary protocol.  
+Once the firmware is ready to boot the volatile BootCurrent variable will point
+to the Boot#### option that was used.
+The EFI Bootloader may scan the device paths of the corresponding  Boot####
+variable.  If a file is present, the bootloader may install the necessary
+protocol.
 
-Once the he kernel efi-stub discovers the protocol and tries to load an initrd,
-the EFI firmware must locate the file(s) via the device paths in the
-EFI_LOAD_OPTION and copy the buffer into the kernel provided memory.
+Once (and if) the kernel efi-stub discovers the protocol and tries to load an
+initrd, the EFI firmware must locate the file(s) via the device paths in the
+EFI_LOAD_OPTION of the correct Boot#### variable and copy the buffer into the 
+kernel provided memory.
