@@ -60,16 +60,16 @@ structure.  Because the size of Description is arbitrary, this data structure
 is not guaranteed to be aligned on a natural boundary. This data structure may
 have to be copied to an aligned natural boundary before it is used.*
 
-Since the FilePathList[1-N] is OS specific we can define a range of N were the
-user can add his initrd(s) path(s) when defining the Boot#### options.
+Since the FilePathList[1-N] is OS specific we can define FilePathList[1] for
+initrds.  A user can add his initrd path when defining the Boot#### options.
 
-Once the firmware is ready to boot the volatile BootCurrent variable will point
+Once the firmware is ready to boot the volatile BootCurrent variable points
 to the Boot#### option that was used.
 The EFI Bootloader may scan the device paths of the corresponding  Boot####
 variable.  If a file is present, the bootloader may install the necessary
 protocol.
 
 Once (and if) the kernel efi-stub discovers the protocol and tries to load an
-initrd, the EFI firmware must locate the file(s) via the device paths in the
+initrd, the EFI firmware must locate the file via the device path in the
 EFI_LOAD_OPTION of the correct Boot#### variable and copy the buffer into the 
 kernel provided memory.
